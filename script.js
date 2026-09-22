@@ -330,17 +330,53 @@ if (finePointer.matches) {
   const profileDesc = document.getElementById('rx-profile-desc');
   const scoreVal = document.getElementById('rx-score-val');
   const circleProgress = document.getElementById('rx-circle-progress');
+  const generalBadge = document.getElementById('rx-general-badge');
+  const generalDesc = document.getElementById('rx-general-desc');
+
+  // Elementos dos 5 Pilares
   const barAtendimento = document.getElementById('rx-bar-atendimento');
   const scoreAtendimento = document.getElementById('rx-score-atendimento');
+  const itemAtendimento = document.getElementById('rx-pillar-item-atendimento');
+  const tagAtendimento = document.getElementById('rx-tag-atendimento');
+  const feedbackAtendimento = document.getElementById('rx-feedback-atendimento');
+
   const barComercial = document.getElementById('rx-bar-comercial');
   const scoreComercial = document.getElementById('rx-score-comercial');
+  const itemComercial = document.getElementById('rx-pillar-item-comercial');
+  const tagComercial = document.getElementById('rx-tag-comercial');
+  const feedbackComercial = document.getElementById('rx-feedback-comercial');
+
   const barAutomacao = document.getElementById('rx-bar-automacao');
   const scoreAutomacao = document.getElementById('rx-score-automacao');
+  const itemAutomacao = document.getElementById('rx-pillar-item-automacao');
+  const tagAutomacao = document.getElementById('rx-tag-automacao');
+  const feedbackAutomacao = document.getElementById('rx-feedback-automacao');
+
   const barDados = document.getElementById('rx-bar-dados');
   const scoreDados = document.getElementById('rx-score-dados');
+  const itemDados = document.getElementById('rx-pillar-item-dados');
+  const tagDados = document.getElementById('rx-tag-dados');
+  const feedbackDados = document.getElementById('rx-feedback-dados');
+
   const barTecnologia = document.getElementById('rx-bar-tecnologia');
   const scoreTecnologia = document.getElementById('rx-score-tecnologia');
+  const itemTecnologia = document.getElementById('rx-pillar-item-tecnologia');
+  const tagTecnologia = document.getElementById('rx-tag-tecnologia');
+  const feedbackTecnologia = document.getElementById('rx-feedback-tecnologia');
+
+  // Pontos de Atenção, Oportunidades, Prioridades & Comparativo
+  const obsBox = document.querySelector('.rx-observations-box');
+  const obsTitle = document.getElementById('rx-obs-title');
   const observationsList = document.getElementById('rx-observations-list');
+  const prioritiesList = document.getElementById('rx-priorities-list');
+
+  const todayBadge = document.getElementById('rx-today-badge');
+  const todaySubtitle = document.getElementById('rx-today-subtitle');
+  const todayFlowList = document.getElementById('rx-today-flow-list');
+  const autoFlowList = document.getElementById('rx-auto-flow-list');
+  const autoBadge = document.getElementById('rx-auto-badge');
+  const autoTrigger = document.getElementById('rx-auto-trigger');
+
   const evolveWhatsappBtn = document.getElementById('rx-evolve-whatsapp-btn');
   const retakeBtn = document.getElementById('rx-retake-btn');
 
@@ -681,9 +717,10 @@ if (finePointer.matches) {
     }
   }
 
-  // Sistema de Cálculo de Pontuação (0 a 100)
+  // Sistema de Cálculo de Pontuação (0 a 100) & Diagnóstico Personalizado
   function computeDiagnostics() {
     const qScores = userAnswers.map(a => a.score);
+    const ansTexts = userAnswers.map(a => a.answer);
     const Q1 = qScores[0] ?? 50;
     const Q2 = qScores[1] ?? 50;
     const Q3 = qScores[2] ?? 50;
@@ -694,91 +731,432 @@ if (finePointer.matches) {
     const Q8 = qScores[7] ?? 50;
 
     // Fórmulas ponderadas para cada pilar
-    const atendimento = Math.min(100, Math.max(10, Math.round((Q1 * 0.65) + (Q3 * 0.35))));
-    const comercial = Math.min(100, Math.max(10, Math.round((Q2 * 0.45) + (Q3 * 0.35) + (Q5 * 0.20))));
+    const atendimento = Math.min(100, Math.max(10, Math.round((Q1 * 0.70) + (Q3 * 0.30))));
+    const comercial = Math.min(100, Math.max(10, Math.round((Q2 * 0.50) + (Q3 * 0.35) + (Q5 * 0.15))));
     const automacao = Math.min(100, Math.max(10, Math.round((Q4 * 0.45) + (Q3 * 0.30) + (Q6 * 0.25))));
-    const dados = Math.min(100, Math.max(10, Math.round((Q5 * 0.45) + (Q7 * 0.40) + (Q2 * 0.15))));
-    const tecnologia = Math.min(100, Math.max(10, Math.round((Q6 * 0.40) + (Q8 * 0.40) + (Q7 * 0.20))));
+    const dados = Math.min(100, Math.max(10, Math.round((Q5 * 0.50) + (Q7 * 0.50))));
+    const tecnologia = Math.min(100, Math.max(10, Math.round((Q6 * 0.55) + (Q8 * 0.45))));
 
     // Score Geral (Maturidade Digital)
     const scoreGeral = Math.min(100, Math.max(10, Math.round((atendimento + comercial + automacao + dados + tecnologia) / 5)));
 
     // Determinação do Perfil
     let profile = {};
-    if (scoreGeral <= 30) {
+    if (scoreGeral <= 35) {
       profile = {
-        title: "OPERAÇÃO MANUAL",
-        desc: "Sua empresa ainda depende fortemente de pessoas e processos manuais para tarefas que poderiam ser organizadas ou automatizadas."
+        title: "OPERAÇÃO MANUAL & VULNERÁVEL",
+        desc: "Sua empresa ainda depende fortemente de tarefas manuais para rotinas essenciais, gerando perda silenciosa de tempo, clientes e receita."
       };
-    } else if (scoreGeral <= 55) {
+    } else if (scoreGeral <= 60) {
       profile = {
         title: "OPERAÇÃO EM TRANSIÇÃO",
-        desc: "Sua empresa já utiliza tecnologia, mas ferramentas e processos ainda funcionam de maneira pouco integrada."
+        desc: "Sua empresa já utiliza tecnologia, mas ferramentas e processos ainda funcionam de maneira desconectada e dependem de esforço manual diário da equipe."
       };
     } else if (scoreGeral <= 80) {
       profile = {
         title: "OPERAÇÃO CONECTADA",
-        desc: "Sua empresa possui uma boa estrutura tecnológica, mas ainda existem oportunidades de integração, automação e inteligência de dados."
+        desc: "Sua empresa possui boa organização operacional, com grandes oportunidades para implementar automações com inteligência artificial e predição de dados."
       };
     } else {
       profile = {
-        title: "OPERAÇÃO INTELIGENTE",
-        desc: "Tecnologia já faz parte da operação e existe uma estrutura sólida para utilizar automação, integrações e dados de maneira estratégica."
+        title: "OPERAÇÃO INTELIGENTE & ESCALÁVEL",
+        desc: "A tecnologia é um pilar estratégico do seu negócio, com processos maduros e prontos para hiper-escala com automações de ponta a ponta."
       };
     }
 
-    // Geração de 2 a 4 Observações Personalizadas
-    const observations = [];
-    const ansTexts = userAnswers.map(a => a.answer);
+    // Classificação Geral da Maturidade Digital (Regra: 0-39, 40-69, 70-100)
+    let generalClassification = {};
+    if (scoreGeral <= 39) {
+      generalClassification = {
+        status: "PONTO DE ATENÇÃO",
+        statusClass: "status-attention",
+        desc: "Sua operação apresenta pontos importantes que merecem atenção. Processos manuais, falta de integração ou pouca visibilidade dos dados podem estar limitando o crescimento e consumindo tempo da equipe."
+      };
+    } else if (scoreGeral <= 69) {
+      generalClassification = {
+        status: "OPERAÇÃO EM EVOLUÇÃO",
+        statusClass: "status-evolution",
+        desc: "Sua empresa já possui uma base digital estruturada, mas ainda existem oportunidades importantes para ganhar eficiência, controle e escala."
+      };
+    } else {
+      generalClassification = {
+        status: "OPERAÇÃO OTIMIZADA",
+        statusClass: "status-optimized",
+        desc: "Sua operação apresenta um bom nível de maturidade digital, com processos estruturados e tecnologia bem aplicada. Ainda existem oportunidades pontuais para aumentar eficiência e escala."
+      };
+    }
 
-    // Q2: CRM / Gestão de Leads
+    // Feedback Personalizado para cada Pilar baseado nas respostas individuais
+    // 1. Atendimento
+    let feedbackAtendimento = "";
+    if (Q1 <= 35) {
+      feedbackAtendimento = "Principal oportunidade: novos leads aguardam horas ou até o dia seguinte para serem respondidos. Mais de 60% dos contatos em potencial desistem ou fecham com concorrentes nesse intervalo.";
+    } else if (Q1 <= 60) {
+      feedbackAtendimento = "Ponto observado: tempo de resposta entre 10 minutos e 1 hora. A equipe atende bem em horário comercial, mas contatos no almoço, noite ou fins de semana acabam esfriando.";
+    } else if (Q1 <= 80) {
+      feedbackAtendimento = "Destaque: boa velocidade de resposta em horário comercial (até 10 minutos). O próximo passo é atendimento instantâneo 24/7 com IA integrada ao WhatsApp.";
+    } else {
+      feedbackAtendimento = "Destaque: atendimento imediato e ágil. O salto de escala agora é a triagem e qualificação autônoma por IA antes de acionar a equipe comercial.";
+    }
+
+    // 2. Comercial
+    let feedbackComercial = "";
     if (ansTexts[1] === "WhatsApp") {
-      observations.push("Seu WhatsApp está funcionando também como CRM. Conforme o volume de oportunidades aumenta, isso pode dificultar o acompanhamento dos leads e gerar perda de dados.");
-    } else if (["Planilha", "Anotações/processos manuais", "Não temos um controle definido"].includes(ansTexts[1])) {
-      observations.push("O controle comercial em planilhas ou anotações descentraliza o histórico das oportunidades e impede a visualização clara do funil em tempo real.");
+      feedbackComercial = "Principal oportunidade: o uso do WhatsApp pessoal como base de dados deixa conversas, contatos e orçamentos retidos nos aparelhos, sem histórico centralizado.";
+    } else if (ansTexts[1] === "Planilha") {
+      feedbackComercial = "Ponto observado: gestão comercial em planilhas exige preenchimento manual diário, deixando o funil estático e follow-ups de orçamentos descontinuados.";
+    } else if (["Anotações/processos manuais", "Não temos um controle definido"].includes(ansTexts[1])) {
+      feedbackComercial = "Principal oportunidade: implementar controle comercial centralizado para evitar perda de negociações por falta de rastreamento do funil.";
+    } else if (ansTexts[2] === "Normalmente o contato acaba sendo perdido" || ansTexts[2] === "Tentamos lembrar manualmente") {
+      feedbackComercial = "Ponto observado: mesmo com CRM, o acompanhamento pós-orçamento ainda depende de lembrança manual. Automatizar essa rotina recupera vendas ativas.";
+    } else {
+      feedbackComercial = "Destaque: processo comercial estruturado com CRM e rotina consistente de acompanhamento das oportunidades.";
     }
 
-    // Q3: Follow-up pós-orçamento
-    if (["Normalmente o contato acaba sendo perdido", "Tentamos lembrar manualmente"].includes(ansTexts[2])) {
-      observations.push("Existem oportunidades comerciais que podem estar sendo perdidas pela ausência de uma rotina estruturada de acompanhamento pós-orçamento.");
+    // 3. Automação
+    let feedbackAutomacao = "";
+    if (Q4 <= 30) {
+      feedbackAutomacao = "Principal oportunidade: automatizar tarefas repetitivas que hoje sobrecarregam o dia a dia da equipe, gerando lentidão e retrabalho operacional.";
+    } else if (Q4 <= 55) {
+      feedbackAutomacao = "Ponto observado: rotinas essenciais funcionam, mas a redigitação de informações e repasses manuais entre sistemas ainda consomem horas produtivas.";
+    } else {
+      feedbackAutomacao = "Destaque: alta eficiência operacional no fluxo diário, com rotinas ágeis bem estabelecidas e baixo atrito manual.";
     }
 
-    // Q4: Tarefas manuais
-    if (["Praticamente tudo", "Muito", "Uma parte considerável"].includes(ansTexts[3])) {
-      observations.push("Identificamos processos repetitivos na sua operação diária que possuem grande potencial de automação para liberar tempo da equipe.");
+    // 4. Dados & Métricas
+    let feedbackDados = "";
+    if (dados <= 35) {
+      feedbackDados = "Principal oportunidade: estruturar relatórios em tempo real para rastrear de onde vêm os clientes mais lucrativos e acompanhar a operação à distância pelo celular.";
+    } else if (dados <= 65) {
+      feedbackDados = "Ponto observado: visibilidade parcial dos indicadores. Integrar custos de aquisição e conversão final trará maior precisão nas decisões.";
+    } else {
+      feedbackDados = "Destaque: excelente controle de dados, com visão clara das origens dos leads e métricas operacionais acessíveis na palma da mão.";
     }
 
-    // Q6: Integração de sistemas
-    if (["Quase tudo funciona isoladamente", "Temos várias ferramentas separadas"].includes(ansTexts[5])) {
-      observations.push("Suas ferramentas funcionam de maneira isolada. Integrar site, WhatsApp, CRM e gestão pode reduzir retrabalho e centralizar informações.");
+    // 5. Tecnologia & Integração
+    let feedbackTecnologia = "";
+    if (tecnologia <= 35) {
+      feedbackTecnologia = "Principal oportunidade: conectar ferramentas que hoje operam isoladas (site, WhatsApp, planilhas), eliminando pontes manuais que travam a escala.";
+    } else if (tecnologia <= 65) {
+      feedbackTecnologia = "Ponto observado: boas ferramentas em uso, com oportunidade de conectar o fluxo ponta a ponta através de integrações diretas.";
+    } else {
+      feedbackTecnologia = "Destaque: ecossistema tecnológico integrado e conectado como vantagem estratégica para o crescimento do negócio.";
     }
 
-    // Q5: Origem de leads
-    if (["Não sabemos", "Temos dificuldade para acompanhar"].includes(ansTexts[4])) {
-      observations.push("A ausência de rastreamento claro da origem dos contatos dificulta saber com precisão onde seus investimentos geram mais retorno.");
+    const feedbacks = {
+      atendimento: feedbackAtendimento,
+      comercial: feedbackComercial,
+      automacao: feedbackAutomacao,
+      dados: feedbackDados,
+      tecnologia: feedbackTecnologia
+    };
+
+    // Geração Inteligente de OPORTUNIDADES (Exatamente 3 itens reais baseados nas respostas)
+    const oppCandidates = [];
+
+    // Oportunidade 1: Atendimento / Primeiro Contato
+    if (ansTexts[0].includes("dia seguinte") || ansTexts[0].includes("Algumas horas")) {
+      oppCandidates.push({
+        title: "Primeiro contato",
+        text: "O tempo de resposta no WhatsApp pode estar fazendo sua empresa perder oportunidades para concorrentes mais rápidos."
+      });
+    } else if (ansTexts[0].includes("1 hora")) {
+      oppCandidates.push({
+        title: "Primeiro contato",
+        text: "A demora de até 1 hora para responder no WhatsApp esfria leads no momento de maior interesse."
+      });
     }
 
-    // Q7: Gestão à distância
-    if (["Não teria uma visão clara", "Precisaria falar com a equipe"].includes(ansTexts[6])) {
-      observations.push("A gestão à distância fica restrita sem painéis em tempo real que entreguem os principais indicadores da operação direto no seu celular.");
+    // Oportunidade 2: Gestão Comercial
+    if (ansTexts[1] === "WhatsApp") {
+      oppCandidates.push({
+        title: "Gestão comercial",
+        text: "O uso do WhatsApp pessoal como base de dados deixa histórico e orçamentos retidos nos celulares, sem controle central."
+      });
+    } else if (ansTexts[1] === "Planilha") {
+      oppCandidates.push({
+        title: "Gestão comercial",
+        text: "A ausência de um processo centralizado dificulta acompanhar negociações e medir conversões em tempo real."
+      });
+    } else if (ansTexts[1].includes("Anotações") || ansTexts[1].includes("Não temos")) {
+      oppCandidates.push({
+        title: "Gestão comercial",
+        text: "A falta de um controle centralizado de leads faz oportunidades serem esquecidas sem acompanhamento."
+      });
+    } else if (ansTexts[2].includes("perdido") || ansTexts[2].includes("lembrar manualmente")) {
+      oppCandidates.push({
+        title: "Follow-up de propostas",
+        text: "Orçamentos sem rotina de retorno acabam sendo perdidos, diminuindo o retorno dos investimentos em captação."
+      });
     }
 
-    // Q1: Tempo de resposta
-    if (["Às vezes só respondemos no dia seguinte", "Algumas horas"].includes(ansTexts[0])) {
-      observations.push("O tempo de resposta aos novos contatos está alto. Uma IA no atendimento qualifica a demanda e responde o visitante em segundos 24/7.");
+    // Oportunidade 3: Automação
+    if (ansTexts[3].includes("Praticamente tudo") || ansTexts[3].includes("Muito")) {
+      oppCandidates.push({
+        title: "Automação",
+        text: "Existem tarefas repetitivas que podem ser automatizadas para liberar tempo da equipe e evitar erros."
+      });
+    } else if (ansTexts[3].includes("Uma parte considerável")) {
+      oppCandidates.push({
+        title: "Automação",
+        text: "Rotinas manuais e repasses de informações diminuem o ritmo diário e consomem horas de trabalho produtivo."
+      });
     }
 
-    // Fallback para garantir entre 2 e 4 observações
-    if (observations.length < 2) {
-      observations.push("Sua estrutura possui boa base de tecnologia; a próxima etapa de escala envolve inteligência preditiva e agentes autônomos no WhatsApp.");
-      observations.push("Recomendamos aprofundar cadências automáticas de retenção ativa para aumentar o retorno de clientes antigos.");
+    // Oportunidade 4: Rastreamento & Dados
+    if (ansTexts[4].includes("Não sabemos") || ansTexts[4].includes("dificuldade")) {
+      oppCandidates.push({
+        title: "Rastreamento de dados",
+        text: "Sem rastrear com clareza a origem dos leads, torna-se difícil identificar os canais de marketing mais lucrativos."
+      });
     }
+
+    // Oportunidade 5: Integração de Sistemas
+    if (ansTexts[5].includes("isoladamente") || ansTexts[5].includes("várias ferramentas")) {
+      oppCandidates.push({
+        title: "Integração de sistemas",
+        text: "Ferramentas que operam isoladas exigem redigitação constante entre WhatsApp, planilhas e sistemas de gestão."
+      });
+    }
+
+    // Oportunidade 6: Gestão Remota
+    if (ansTexts[6].includes("Não teria") || ansTexts[6].includes("falar com a equipe")) {
+      oppCandidates.push({
+        title: "Gestão remota",
+        text: "A ausência de um painel no celular impede você de acompanhar os números e vendas da empresa à distância."
+      });
+    }
+
+    // Fallbacks inteligentes se a empresa tiver poucos pontos de atenção
+    if (oppCandidates.length < 3) {
+      oppCandidates.push({
+        title: "Atendimento inteligente 24/7",
+        text: "Implementar IA integrada ao WhatsApp para qualificar leads e agendar atendimentos de forma autônoma."
+      });
+    }
+    if (oppCandidates.length < 3) {
+      oppCandidates.push({
+        title: "Reativação de base",
+        text: "Criar fluxos automáticos de pós-venda para resgatar clientes inativos e gerar novas receitas."
+      });
+    }
+    if (oppCandidates.length < 3) {
+      oppCandidates.push({
+        title: "Hiper-automação",
+        text: "Conectar automações avançadas de ponta a ponta para escalar as vendas sem inchar a estrutura operacional."
+      });
+    }
+
+    const opportunities = oppCandidates.slice(0, 3);
+
+    // Geração das 3 PRIORIDADES RECOMENDADAS (Baseadas nos pilares de menor pontuação)
+    const sortedPillars = [
+      { key: 'atendimento', val: atendimento },
+      { key: 'comercial', val: comercial },
+      { key: 'automacao', val: automacao },
+      { key: 'dados', val: dados },
+      { key: 'tecnologia', val: tecnologia }
+    ].sort((a, b) => a.val - b.val);
+
+    const priorityPool = [];
+    sortedPillars.forEach(pilar => {
+      if (priorityPool.length >= 3) return;
+
+      if (pilar.key === 'atendimento') {
+        const isSlow = ansTexts[0].includes("dia seguinte") || ansTexts[0].includes("Algumas horas") || ansTexts[0].includes("1 hora");
+        priorityPool.push({
+          title: "CENTRALIZAR O ATENDIMENTO",
+          desc: isSlow
+            ? "Organize os contatos recebidos pelo WhatsApp e outros canais para reduzir o tempo de resposta e evitar oportunidades esquecidas."
+            : "Estruture o atendimento comercial no WhatsApp com triagem ágil para qualificar leads e acelerar fechamentos."
+        });
+      } else if (pilar.key === 'comercial') {
+        const isNotCRM = ansTexts[1] !== "CRM";
+        priorityPool.push({
+          title: "ESTRUTURAR O PROCESSO COMERCIAL",
+          desc: isNotCRM
+            ? "Centralize leads e negociações em um CRM para acompanhar cada oportunidade do primeiro contato até o fechamento."
+            : "Ative cadências automáticas de follow-up pós-orçamento no WhatsApp para recuperar negociações paradas."
+        });
+      } else if (pilar.key === 'automacao') {
+        priorityPool.push({
+          title: "AUTOMATIZAR TAREFAS REPETITIVAS",
+          desc: "Identifique atividades manuais que podem ser executadas automaticamente, reduzindo trabalho operacional da equipe."
+        });
+      } else if (pilar.key === 'dados') {
+        const noTrack = ansTexts[4].includes("Não sabemos") || ansTexts[4].includes("dificuldade");
+        priorityPool.push({
+          title: noTrack ? "RASTREAR ORIGENS DE VENDAS" : "CENTRALIZAR MÉTRICAS DA OPERAÇÃO",
+          desc: noTrack
+            ? "Mapeie a origem de cada cliente para entender com precisão quais canais geram o maior retorno sobre investimento."
+            : "Crie um painel de indicadores atualizado em tempo real para acompanhar a evolução da operação pelo celular."
+        });
+      } else if (pilar.key === 'tecnologia') {
+        priorityPool.push({
+          title: "INTEGRAR FERRAMENTAS E SISTEMAS",
+          desc: "Conecte seus canais de atendimento, vendas e gestão para que as informações transitem sem retrabalho manual."
+        });
+      }
+    });
+
+    const priorities = priorityPool.slice(0, 3).map((item, idx) => ({
+      number: idx + 1,
+      title: item.title,
+      desc: item.desc
+    }));
+
+    // Fluxo Comparativo Personalizado
+    const comparativeFlow = buildComparativeFlow(ansTexts, qScores, { atendimento, comercial, automacao, dados, tecnologia }, scoreGeral);
 
     return {
       scores: { atendimento, comercial, automacao, dados, tecnologia },
       scoreGeral,
       profile,
-      observations: observations.slice(0, 4)
+      generalClassification,
+      feedbacks,
+      opportunities,
+      priorities,
+      comparativeFlow
+    };
+  }
+
+  // Construtor do Fluxo Comparativo Dinâmico (HOJE vs COM AUTOMAÇÃO)
+  function buildComparativeFlow(ansTexts, qScores, scores, scoreGeral) {
+    const q1Ans = (ansTexts && ansTexts[0]) || "";
+    const q2Ans = (ansTexts && ansTexts[1]) || "";
+    const q3Ans = (ansTexts && ansTexts[2]) || "";
+    const q4Ans = (ansTexts && ansTexts[3]) || "";
+    const q5Ans = (ansTexts && ansTexts[4]) || "";
+    const q6Ans = (ansTexts && ansTexts[5]) || "";
+    const q7Ans = (ansTexts && ansTexts[6]) || "";
+    const q8Ans = (ansTexts && ansTexts[7]) || "";
+
+    const todayTrigger = "Lead recebido";
+    const autoTrigger = "Lead recebido";
+
+    // 1. ATENDIMENTO / RESPOSTA AO LEAD (Pergunta 1)
+    let leftStep1 = "Responder manualmente";
+    let rightCardWhatsApp = "WhatsApp enviado";
+
+    if (q1Ans.includes("dia seguinte")) {
+      leftStep1 = "Resposta no outro dia";
+      rightCardWhatsApp = "Atendimento 24/7";
+    } else if (q1Ans.includes("Algumas horas")) {
+      leftStep1 = "Horas para responder";
+      rightCardWhatsApp = "Atendimento 24/7";
+    } else if (q1Ans.includes("1 hora")) {
+      leftStep1 = "Resposta com atraso";
+      rightCardWhatsApp = "WhatsApp imediato";
+    } else if (q1Ans.includes("10 minutos")) {
+      leftStep1 = "Responder manualmente";
+      rightCardWhatsApp = "WhatsApp enviado";
+    } else if (q1Ans.includes("Imediatamente")) {
+      leftStep1 = "Equipe interrompida";
+      rightCardWhatsApp = "Triagem com IA";
+    }
+
+    // 2. COMERCIAL / CADASTRO / CRM (Pergunta 2)
+    let leftStep2 = "Cadastrar informação";
+    let rightCardCRM = "CRM atualizado";
+
+    if (q2Ans === "Planilha") {
+      leftStep2 = "Digitar em planilha";
+      rightCardCRM = "CRM atualizado";
+    } else if (q2Ans === "WhatsApp") {
+      leftStep2 = "Preso no WhatsApp";
+      rightCardCRM = "Lead salvo no CRM";
+    } else if (q2Ans.includes("Anotações") || q2Ans.includes("Não temos")) {
+      leftStep2 = "Anotar em papel";
+      rightCardCRM = "Oportunidade no CRM";
+    } else if (q2Ans === "CRM") {
+      leftStep2 = "Cadastrar no CRM";
+      rightCardCRM = "CRM integrado";
+    }
+
+    // 3. REPASSE & COMUNICAÇÃO INTERNA (Perguntas 6 e 4)
+    let leftStep3 = "Avisar vendedor";
+    let rightCardNotif = "Responsável notificado";
+
+    if (q6Ans.includes("isoladamente") || q6Ans.includes("várias ferramentas")) {
+      leftStep3 = "Copiar dados na mão";
+      rightCardNotif = "Canais integrados";
+    } else if (q4Ans.includes("Praticamente tudo") || q4Ans.includes("Muito")) {
+      leftStep3 = "Repassar à equipe";
+      rightCardNotif = "Vendedor acionado";
+    } else {
+      leftStep3 = "Avisar vendedor";
+      rightCardNotif = "Responsável notificado";
+    }
+
+    // 4. LEMBRETE & ROTINA DE VENDAS (Perguntas 3 e 4)
+    let leftStep4 = "Criar lembrete";
+    let rightCardFollowup = "Follow-up programado";
+
+    if (q3Ans.includes("perdido")) {
+      leftStep4 = "Contato esquecido";
+      rightCardFollowup = "Resgate de vendas";
+    } else if (q3Ans.includes("lembrar manualmente")) {
+      leftStep4 = "Tentar lembrar";
+      rightCardFollowup = "Follow-up programado";
+    } else if (q3Ans.includes("recebe um lembrete")) {
+      leftStep4 = "Lembrete no celular";
+      rightCardFollowup = "Cobrança automática";
+    } else if (q3Ans.includes("automático")) {
+      leftStep4 = "Conferir tarefas";
+      rightCardFollowup = "Rotina autônoma";
+    }
+
+    // 5. FECHAMENTO, DADOS & MÉTRICAS (Perguntas 3, 5, 7)
+    let leftStep5 = "Fazer follow-up";
+    let rightCardDados = "Dados registrados";
+
+    if (q3Ans.includes("perdido")) {
+      leftStep5 = "Venda perdida";
+    } else if (q5Ans.includes("Não sabemos") || q5Ans.includes("dificuldade")) {
+      leftStep5 = "Origem desconhecida";
+    } else if (q7Ans.includes("Não teria") || q7Ans.includes("falar com a equipe")) {
+      leftStep5 = "Sem visão no celular";
+    } else if (q3Ans.includes("lembrar manualmente")) {
+      leftStep5 = "Follow-up manual";
+    } else {
+      leftStep5 = "Fazer follow-up";
+    }
+
+    if (q5Ans.includes("Não sabemos") || q5Ans.includes("dificuldade")) {
+      rightCardDados = "Origem rastreada";
+    } else if (q7Ans.includes("Não teria") || q7Ans.includes("falar com a equipe")) {
+      rightCardDados = "Métricas no celular";
+    } else if (q4Ans.includes("Praticamente") || q4Ans.includes("Muito")) {
+      rightCardDados = "Tarefas automáticas";
+    } else {
+      rightCardDados = "Dados registrados";
+    }
+
+    // Coluna COM AUTOMAÇÃO (5 cards com check em linha única):
+    const autoCards = [
+      rightCardCRM,
+      rightCardWhatsApp,
+      rightCardNotif,
+      rightCardFollowup,
+      rightCardDados
+    ];
+
+    // Coluna HOJE (passos lineares em linha única):
+    const todaySteps = [
+      leftStep1,
+      leftStep2,
+      leftStep3,
+      leftStep4,
+      leftStep5
+    ];
+
+    return {
+      todayBadgeText: "HOJE",
+      autoBadgeText: "COM AUTOMAÇÃO",
+      todayTrigger,
+      autoTrigger,
+      todaySteps,
+      autoCards
     };
   }
 
@@ -882,7 +1260,7 @@ if (finePointer.matches) {
     });
   }
 
-  // Renderizar Tela de Resultados
+  // Renderizar Tela de Resultados Personalizada
   function renderResults(diag, userName) {
     header.style.display = 'none';
     showPanel(panelResult);
@@ -891,10 +1269,30 @@ if (finePointer.matches) {
     profileTitle.textContent = diag.profile.title;
     profileDesc.textContent = diag.profile.desc;
 
-    // Animação do Score Circular
+    // Classificação Geral da Maturidade Digital
+    if (generalBadge && diag.generalClassification) {
+      generalBadge.textContent = diag.generalClassification.status;
+      generalBadge.className = `rx-general-badge ${diag.generalClassification.statusClass}`;
+    }
+    if (generalDesc && diag.generalClassification) {
+      generalDesc.textContent = diag.generalClassification.desc;
+    }
+
+    // Animação do Score Circular & Controle de Movimento do Radar
     const targetScore = diag.scoreGeral;
     let currentScore = 0;
     scoreVal.textContent = '0';
+
+    const resultRadar = document.getElementById('rx-result-radar');
+    const resultSweep = document.getElementById('rx-result-sweep');
+    if (resultRadar) {
+      resultRadar.classList.remove('is-finished');
+      resultRadar.classList.add('is-reading');
+    }
+    if (resultSweep) {
+      resultSweep.style.animationPlayState = 'running';
+      resultSweep.style.opacity = '1';
+    }
 
     const circleCircumference = 314.16;
     if (circleProgress) {
@@ -910,41 +1308,205 @@ if (finePointer.matches) {
       if (currentScore >= targetScore) {
         currentScore = targetScore;
         clearInterval(counterInterval);
+
+        // Leitura concluída: encerra o movimento imediatamente
+        if (resultRadar) {
+          resultRadar.classList.remove('is-reading');
+          resultRadar.classList.add('is-finished');
+        }
+        if (resultSweep) {
+          resultSweep.style.animationPlayState = 'paused';
+          resultSweep.style.opacity = '0';
+        }
       }
       scoreVal.textContent = String(currentScore);
     }, 18);
 
-    // Animação das Barras dos 5 Pilares
+    // Renderizar e Categorizar cada um dos 5 Pilares
+    const pillarsConfig = [
+      { key: 'atendimento', val: diag.scores.atendimento, itemEl: itemAtendimento, tagEl: tagAtendimento, barEl: barAtendimento, scoreEl: scoreAtendimento, feedbackEl: feedbackAtendimento, text: diag.feedbacks.atendimento },
+      { key: 'comercial', val: diag.scores.comercial, itemEl: itemComercial, tagEl: tagComercial, barEl: barComercial, scoreEl: scoreComercial, feedbackEl: feedbackComercial, text: diag.feedbacks.comercial },
+      { key: 'automacao', val: diag.scores.automacao, itemEl: itemAutomacao, tagEl: tagAutomacao, barEl: barAutomacao, scoreEl: scoreAutomacao, feedbackEl: feedbackAutomacao, text: diag.feedbacks.automacao },
+      { key: 'dados', val: diag.scores.dados, itemEl: itemDados, tagEl: tagDados, barEl: barDados, scoreEl: scoreDados, feedbackEl: feedbackDados, text: diag.feedbacks.dados },
+      { key: 'tecnologia', val: diag.scores.tecnologia, itemEl: itemTecnologia, tagEl: tagTecnologia, barEl: barTecnologia, scoreEl: scoreTecnologia, feedbackEl: feedbackTecnologia, text: diag.feedbacks.tecnologia }
+    ];
+
     setTimeout(() => {
-      barAtendimento.style.width = `${diag.scores.atendimento}%`;
-      scoreAtendimento.textContent = `${diag.scores.atendimento}%`;
+      pillarsConfig.forEach(p => {
+        if (!p.barEl || !p.scoreEl) return;
 
-      barComercial.style.width = `${diag.scores.comercial}%`;
-      scoreComercial.textContent = `${diag.scores.comercial}%`;
+        // Animação de largura e valor numérico
+        p.barEl.style.width = `${p.val}%`;
+        p.scoreEl.textContent = `${p.val}%`;
 
-      barAutomacao.style.width = `${diag.scores.automacao}%`;
-      scoreAutomacao.textContent = `${diag.scores.automacao}%`;
+        // Textinho personalizado de feedback por pilar
+        if (p.feedbackEl) {
+          p.feedbackEl.textContent = p.text;
+        }
 
-      barDados.style.width = `${diag.scores.dados}%`;
-      scoreDados.textContent = `${diag.scores.dados}%`;
+        // Reset de classes
+        if (p.itemEl) {
+          p.itemEl.classList.remove('is-attention', 'is-bottleneck', 'is-good', 'is-evolution');
+        }
+        if (p.tagEl) {
+          p.tagEl.className = 'rx-p-tag';
+        }
+        p.scoreEl.className = 'rx-p-val';
+        p.barEl.className = 'rx-p-bar'; // Todas as barras utilizam azul/ciano padrão Maré Flow
 
-      barTecnologia.style.width = `${diag.scores.tecnologia}%`;
-      scoreTecnologia.textContent = `${diag.scores.tecnologia}%`;
+        // Classificação: cores vermelho, laranja e verde apenas nos badges de status
+        // Destacando apenas a linha de PONTO DE ATENÇÃO
+        if (p.val < 40) {
+          // Ponto de Atenção (0% a 39%): Linha de progresso vermelha
+          if (p.tagEl) {
+            p.tagEl.textContent = 'PONTO DE ATENÇÃO';
+            p.tagEl.classList.add('tag-bottleneck');
+          }
+          p.barEl.classList.add('bar-attention');
+          if (p.itemEl) {
+            p.itemEl.classList.add('is-attention');
+          }
+        } else if (p.val >= 70) {
+          // Otimizado (70% a 100%)
+          if (p.tagEl) {
+            p.tagEl.textContent = 'OTIMIZADO';
+            p.tagEl.classList.add('tag-optimized');
+          }
+        } else {
+          // Em evolução (40% a 69%)
+          if (p.tagEl) {
+            p.tagEl.textContent = 'EM EVOLUÇÃO';
+            p.tagEl.classList.add('tag-evolution');
+          }
+        }
+      });
     }, 150);
 
-    // Lista de Observações
-    observationsList.innerHTML = '';
-    diag.observations.forEach(obs => {
-      const li = document.createElement('li');
-      li.textContent = obs;
-      observationsList.appendChild(li);
-    });
+    // Oportunidades Identificadas no seu Raio-X
+    if (observationsList && diag.opportunities) {
+      observationsList.innerHTML = '';
+      if (obsBox) {
+        obsBox.classList.remove('has-bottlenecks');
+      }
+      if (obsTitle) {
+        obsTitle.textContent = 'OPORTUNIDADES IDENTIFICADAS NO SEU RAIO-X';
+      }
+
+      diag.opportunities.forEach(opp => {
+        const li = document.createElement('li');
+        li.className = 'rx-opp-item';
+
+        const titleEl = document.createElement('strong');
+        titleEl.className = 'rx-opp-title';
+        titleEl.textContent = opp.title;
+
+        const textEl = document.createElement('p');
+        textEl.className = 'rx-opp-text';
+        textEl.textContent = opp.text;
+
+        li.appendChild(titleEl);
+        li.appendChild(textEl);
+        observationsList.appendChild(li);
+      });
+    }
+
+    // Suas 3 Prioridades Recomendadas
+    if (prioritiesList && diag.priorities) {
+      prioritiesList.innerHTML = '';
+      diag.priorities.forEach(prio => {
+        const item = document.createElement('div');
+        item.className = 'rx-priority-item';
+
+        const numBox = document.createElement('div');
+        numBox.className = 'rx-priority-number';
+        numBox.textContent = String(prio.number);
+
+        const content = document.createElement('div');
+        content.className = 'rx-priority-content';
+
+        const titleEl = document.createElement('strong');
+        titleEl.className = 'rx-priority-title';
+        titleEl.textContent = prio.title;
+
+        const descEl = document.createElement('p');
+        descEl.className = 'rx-priority-desc';
+        descEl.textContent = prio.desc;
+
+        content.appendChild(titleEl);
+        content.appendChild(descEl);
+
+        item.appendChild(numBox);
+        item.appendChild(content);
+
+        prioritiesList.appendChild(item);
+      });
+    }
+
+    // Renderizar Comparativo Visual Dinâmico ("HOJE" vs "COM AUTOMAÇÃO")
+    const flow = diag.comparativeFlow;
+    if (flow) {
+      if (todayBadge) todayBadge.textContent = flow.todayBadgeText;
+      if (autoBadge) autoBadge.textContent = flow.autoBadgeText;
+
+      // Coluna HOJE: Trigger inicial + Passos lineares com setas
+      if (todayFlowList) {
+        todayFlowList.innerHTML = '';
+
+        const triggerEl = document.createElement('div');
+        triggerEl.className = 'rx-flow-step rx-step-trigger';
+        triggerEl.textContent = flow.todayTrigger;
+        todayFlowList.appendChild(triggerEl);
+
+        flow.todaySteps.forEach(stepText => {
+          const arrow = document.createElement('span');
+          arrow.className = 'rx-flow-arrow';
+          arrow.setAttribute('aria-hidden', 'true');
+          arrow.textContent = '↓';
+          todayFlowList.appendChild(arrow);
+
+          const stepEl = document.createElement('div');
+          stepEl.className = 'rx-flow-step';
+          stepEl.textContent = stepText;
+          todayFlowList.appendChild(stepEl);
+        });
+      }
+
+      // Coluna COM AUTOMAÇÃO: Trigger inicial + Cards com check
+      const autoTriggerEl = document.getElementById('rx-auto-trigger');
+      if (autoTriggerEl) {
+        autoTriggerEl.textContent = flow.autoTrigger;
+      }
+
+      if (autoFlowList) {
+        autoFlowList.innerHTML = '';
+        flow.autoCards.forEach(cardText => {
+          const card = document.createElement('div');
+          card.className = 'rx-auto-card';
+
+          const check = document.createElement('span');
+          check.className = 'rx-auto-card-check';
+          check.setAttribute('aria-hidden', 'true');
+          check.textContent = '✓';
+
+          const text = document.createElement('span');
+          text.className = 'rx-auto-card-text';
+          text.textContent = cardText;
+
+          card.appendChild(check);
+          card.appendChild(text);
+          autoFlowList.appendChild(card);
+        });
+      }
+    }
 
     // Link WhatsApp Comercial pré-preenchido
+    const statusText = diag.generalClassification ? diag.generalClassification.status : diag.profile.title;
     const whatsappMsg = encodeURIComponent(
       `Olá! Fiz o Raio-X Digital da Maré Flow e gostaria de conversar sobre meu diagnóstico.\n\n` +
       `*Nome:* ${userName}\n` +
-      `*Perfil Identificado:* ${diag.profile.title} (${diag.scoreGeral}/100)\n` +
+      `*Status:* ${statusText}\n` +
+      `*Score de Maturidade Digital:* ${diag.scoreGeral}/100\n` +
+      `*Perfil Identificado:* ${diag.profile.title}\n` +
       `*Atendimento:* ${diag.scores.atendimento}% · *Comercial:* ${diag.scores.comercial}% · *Automação:* ${diag.scores.automacao}% · *Dados:* ${diag.scores.dados}% · *Tecnologia:* ${diag.scores.tecnologia}%`
     );
     evolveWhatsappBtn.href = `https://wa.me/5548998258944?text=${whatsappMsg}`;
