@@ -290,7 +290,7 @@ if (finePointer.matches) {
    ========================================================================== */
 (function initRaioX() {
   // CONFIGURAÇÃO DO WEBHOOK (Insira a URL do Make ou n8n abaixo)
-  const WEBHOOK_RAIO_X = "";
+  const WEBHOOK_RAIO_X = "https://webhook.mareflow.com.br/webhook/raiox";
 
   // Elementos do DOM
   const modal = document.getElementById('raio-x-modal');
@@ -1208,7 +1208,7 @@ if (finePointer.matches) {
       const diag = computeDiagnostics();
       const utms = getUTMs();
 
-      // Montagem do payload conforme especificação
+      // Montagem do payload completo conforme especificação
       const webhookPayload = {
         origem: "Raio-X Digital Maré Flow",
         nome: nameVal,
@@ -1216,6 +1216,9 @@ if (finePointer.matches) {
         email: emailVal,
         data_hora: new Date().toISOString(),
         perfil: diag.profile.title,
+        perfil_descricao: diag.profile.desc,
+        classificacao: diag.generalClassification ? diag.generalClassification.status : "",
+        classificacao_descricao: diag.generalClassification ? diag.generalClassification.desc : "",
         score_geral: diag.scoreGeral,
         scores: {
           atendimento: diag.scores.atendimento,
@@ -1224,9 +1227,13 @@ if (finePointer.matches) {
           dados: diag.scores.dados,
           tecnologia: diag.scores.tecnologia
         },
+        feedbacks: diag.feedbacks,
+        oportunidades: diag.opportunities,
+        prioridades: diag.priorities,
         respostas: userAnswers.map(a => ({
           pergunta: a.question,
-          resposta: a.answer
+          resposta: a.answer,
+          score: a.score
         })),
         url_atual: window.location.href,
         url_origem: window.location.href,
@@ -1237,14 +1244,19 @@ if (finePointer.matches) {
         utm_term: utms.term
       };
 
-      // Disparo assíncrono para o Webhook com tratamento tolerante a falhas
+      // Disparo assíncrono para o Webhook com tratamento tolerante a falhas e timeout
       if (WEBHOOK_RAIO_X && WEBHOOK_RAIO_X.trim().startsWith('http')) {
         try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 6000);
           await fetch(WEBHOOK_RAIO_X, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(webhookPayload)
+            body: JSON.stringify(webhookPayload),
+            signal: controller.signal,
+            keepalive: true
           });
+          clearTimeout(timeoutId);
         } catch (err) {
           console.warn('Webhook dispatch notification:', err);
         }
